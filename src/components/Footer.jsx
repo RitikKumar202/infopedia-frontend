@@ -20,7 +20,8 @@ const Footer = () => {
               </div>
               <div className="mb-1">
                 <p className="text-[13px] text-center md:text-sm md:w-[80%] md:text-start">
-                  The best place to explore articles on different topics.
+                  The best place to share thoughts, ideas, and experiences on a
+                  variety of topics.
                 </p>
               </div>
               <div className="mb-2 py-3 w-full">

@@ -46,7 +46,7 @@ const Header = () => {
               navIsVisible ? "right-0" : "-right-full"
             } transition-all duration-300 mt-[59px] lg:mt-0 bg-primary lg:bg-transparent z-[49] flex flex-col w-full lg:w-auto justify-center lg:justify-end lg:flex-row fixed top-0 bottom-0 lg:static gap-x-9 items-center`}
           >
-            <ul className="flex flex-col items-start gap-y-1 lg:flex-row gap-x-5 font-medium text-lg">
+            <ul className="flex flex-col items-center gap-y-1 lg:flex-row gap-x-5 font-medium text-lg">
               {navItemName.map((item) => (
                 <NavItem key={item.name} name={item.name} />
               ))}

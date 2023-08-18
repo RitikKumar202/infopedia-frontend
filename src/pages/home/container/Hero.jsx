@@ -9,9 +9,8 @@ const Hero = () => {
           Welcome to <span className="text-primary">Infopedia.</span>
         </h1>
         <p className="text-secondary mt-4 text-center md:text-xl">
-          Welcome to a world of inspiration, knowledge, and creativity – where
-          words come to life and ideas take flight. Explore, engage, and embark
-          on a journey of discovery with us!
+          Discover, Inspire & Engage – Welcome to a world of limitless
+          narratives at Infopedia!
         </p>
         <div className="flex flex-col w-full lg:w-full lg:max-w-[750px] mx-auto gap-y-2.5 mt-10 relative">
           <div className="relative">
@@ -27,7 +26,7 @@ const Hero = () => {
           </button>
         </div>
         <div className="flex flex-col mt-4 lg:flex-row lg:items-center lg:flex-nowrap lg:gap-x-4 lg:mt-7">
-          <span className="font-semibold text-secondary">Popular Tags:</span>
+          <span className="font-semibold text-dark-soft">Popular Tags:</span>
           <ul className="flex flex-wrap text-sm md:text-base gap-x-2.5 gap-y-2.5 mt-3 lg:mt-0 lowercase italic">
             <li className="bg-primary bg-opacity-10 text-primary rounded-lg px-3 py-1.5">
               #Frontend
