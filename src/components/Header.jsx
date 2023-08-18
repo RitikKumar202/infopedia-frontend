@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import logo from "../assets/logo.png";
 import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { UseSelector, useDispatch, useSelector } from "react-redux";
+import { logout } from "../store/actions/user";
 
 const navItemName = [
   { name: "Home" },
@@ -9,6 +12,14 @@ const navItemName = [
 ];
 
 const NavItem = ({ name }) => {
+  const [dropdown, setDropdown] = useState(false);
+
+  const toggleDropdownHandler = () => {
+    setDropdown((curState) => {
+      return !curState;
+    });
+  };
+
   return (
     <li className="text-white lg:text-primary lg:hover:text-secondary transition-all duration-300">
       <a href="/">{name}</a>
@@ -17,12 +28,19 @@ const NavItem = ({ name }) => {
 };
 
 const Header = () => {
+  const dispatch = useDispatch();
   const [navIsVisible, setNavIsVisible] = useState(false);
+  const userState = useSelector((state) => state.user);
+  const [profileDropdown, setProfileDropdown] = useState(false);
 
   const navVisibilityHandler = () => {
     setNavIsVisible((currState) => {
       return !currState;
     });
+  };
+
+  const logoutHandler = () => {
+    dispatch(logout());
   };
 
   return (
@@ -51,9 +69,46 @@ const Header = () => {
                 <NavItem key={item.name} name={item.name} />
               ))}
             </ul>
-            <button className="bg-secondary lg:bg-primary px-4 py-2 mt-4 lg:mt-0 rounded-md text-white font-semibold hover:scale-110 duration-300 transition-all">
-              Sign in
-            </button>
+            {userState.userInfo ? (
+              <div className="text-white items-center gap-y-5 flex flex-col lg:flex-row gap-x-2 font-semibold">
+                <div className="relative group">
+                  <div className="flex flex-col items-center">
+                    <button
+                      className="flex gap-x-1 items-center bg-secondary lg:bg-primary px-4 py-2 mt-4 lg:mt-0 rounded-md text-white font-semibold shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+                      onClick={() => setProfileDropdown(!profileDropdown)}
+                    >
+                      <span>Profile</span>
+                      <MdKeyboardArrowDown className="text-xl" />
+                    </button>
+                    <div
+                      className={`${
+                        profileDropdown ? "block" : "hidden"
+                      } lg:hidden transition-all duration-500 pt-2 lg:absolute lg:bottom-0 lg:right-[-5px] lg:transform lg:translate-y-full lg:group-hover:block w-max`}
+                    >
+                      <ul className="bg-secondary lg:bg-primary text-center flex flex-col shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg overflow-hidden">
+                        <button
+                          type="button"
+                          className="hover:bg-dark-soft lg:hover:bg-secondary hover:text-white px-4 py-2 text-white"
+                        >
+                          Dashboard
+                        </button>
+                        <button
+                          type="button"
+                          onClick={logoutHandler}
+                          className="hover:bg-dark-soft lg:hover:bg-secondary hover:text-white px-4 py-2 text-white"
+                        >
+                          Logout
+                        </button>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button className="bg-secondary lg:bg-primary px-4 py-2 mt-4 lg:mt-0 rounded-md text-white font-semibold hover:scale-110 duration-300 transition-all shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+                Sign in
+              </button>
+            )}
           </div>
         </div>
       </header>
