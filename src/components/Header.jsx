@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import logo from "../assets/logo.png";
 import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { UseSelector, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/actions/user";
+import { useNavigate } from "react-router-dom";
 
 const navItemName = [
   { name: "Home" },
@@ -12,14 +13,6 @@ const navItemName = [
 ];
 
 const NavItem = ({ name }) => {
-  const [dropdown, setDropdown] = useState(false);
-
-  const toggleDropdownHandler = () => {
-    setDropdown((curState) => {
-      return !curState;
-    });
-  };
-
   return (
     <li className="text-white lg:text-primary lg:hover:text-secondary transition-all duration-300">
       <a href="/">{name}</a>
@@ -29,6 +22,7 @@ const NavItem = ({ name }) => {
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [navIsVisible, setNavIsVisible] = useState(false);
   const userState = useSelector((state) => state.user);
   const [profileDropdown, setProfileDropdown] = useState(false);
@@ -105,7 +99,10 @@ const Header = () => {
                 </div>
               </div>
             ) : (
-              <button className="bg-secondary lg:bg-primary px-4 py-2 mt-4 lg:mt-0 rounded-md text-white font-semibold hover:scale-110 duration-300 transition-all shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-secondary lg:bg-primary px-4 py-2 mt-4 lg:mt-0 rounded-md text-white font-semibold hover:scale-110 duration-300 transition-all shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+              >
                 Sign in
               </button>
             )}
