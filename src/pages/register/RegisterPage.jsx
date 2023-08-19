@@ -62,6 +62,10 @@ const RegisterPage = () => {
           <h1 className="text-2xl font-bold text-center text-dark-hard mb-8">
             Sign Up
           </h1>
+          <p className="mb-2 text-right font-medium text-base text-gray-700">
+            <span className="text-red-600 mr-1 font-semibold">*</span>
+            Required
+          </p>
           <form onSubmit={handleSubmit(submitHandler)}>
             <div className="flex flex-col mb-6 w-full">
               <label

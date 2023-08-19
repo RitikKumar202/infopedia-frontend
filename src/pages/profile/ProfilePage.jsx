@@ -1,25 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import Layout from "../../components/Layout";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { login } from "../../services/index/users";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { userActions } from "../../store/reducers/userReducers";
 import { useDispatch, useSelector } from "react-redux";
 
-const LoginPage = () => {
+import { getUserProfile, updateProfile } from "../../services/index/users";
+import ProfilePicture from "../../components/ProfilePicture";
+
+const ProfilePage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.user);
+  const queryClient = useQueryClient();
 
-  const { mutate, isLoading } = useMutation({
-    mutationFn: ({ email, password }) => {
-      return login({ email, password });
+  const { data: profileData, isLoading: profileIsLoading } = useQuery({
+    queryFn: () => {
+      return getUserProfile({ token: userState.userInfo.token });
+    },
+    queryKey: ["profile"],
+  });
+
+  const { mutate, isLoading: updateProfileIsLoading } = useMutation({
+    mutationFn: ({ name, email, password }) => {
+      return updateProfile({
+        token: userState.userInfo.token,
+        userData: { name, email, password },
+      });
     },
     onSuccess: (data) => {
       dispatch(userActions.setUserInfo(data));
       localStorage.setItem("account", JSON.stringify(data));
+      queryClient.invalidateQueries(["profile"]);
+      toast.success("Your profile is updated");
     },
     onError: (error) => {
       toast.error(error.message);
@@ -28,7 +43,7 @@ const LoginPage = () => {
   });
 
   useEffect(() => {
-    if (userState.userInfo) {
+    if (!userState.userInfo) {
       navigate("/");
     }
   }, [navigate, userState.userInfo]);
@@ -39,15 +54,22 @@ const LoginPage = () => {
     formState: { errors, isValid },
   } = useForm({
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
+    values: useMemo(() => {
+      return {
+        name: profileIsLoading ? "" : profileData.name,
+        email: profileIsLoading ? "" : profileData.email,
+      };
+    }, [profileData?.email, profileData?.name, profileIsLoading]),
     mode: "onChange",
   });
 
   const submitHandler = (data) => {
-    const { email, password } = data;
-    mutate({ email, password });
+    const { name, email, password } = data;
+    mutate({ name, email, password });
   };
 
   return (
@@ -55,20 +77,52 @@ const LoginPage = () => {
       <section className="container mx-auto py-10 px-5">
         <div className="w-full max-w-sm mx-auto font-Poppins">
           <h1 className="text-2xl font-bold text-center text-dark-hard mb-8">
-            Sign In
+            Your Profile
           </h1>
           <p className="mb-2 text-right font-medium text-base text-gray-700">
             <span className="text-red-600 mr-1 font-semibold">*</span>
             Required
           </p>
+          <ProfilePicture avatar={profileData?.avatar} />
           <form onSubmit={handleSubmit(submitHandler)}>
+            <div className="flex flex-col mb-6 w-full">
+              <label
+                htmlFor="name"
+                className="text-[#5a7184] font-semibold block"
+              >
+                <p>
+                  Name<span className="text-red-600 ml-[1.5px]">*</span>
+                </p>
+              </label>
+              <input
+                type="text"
+                id="name"
+                {...register("name", {
+                  minLength: {
+                    value: 3,
+                    message: "Name length must be at least of 3 characters",
+                  },
+                  required: {
+                    value: true,
+                    message: "Name is required",
+                  },
+                })}
+                placeholder="Enter your name"
+                className="placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-3 font-semibold  block outline-none border-[2px] border-secondary focus:border-primary"
+              />
+              {errors.name?.message && (
+                <p className="mt-1 ml-1 text-xs text-red-500">
+                  {errors.name?.message}
+                </p>
+              )}
+            </div>
             <div className="flex flex-col mb-6 w-full">
               <label
                 htmlFor="email"
                 className="text-[#5a7184] font-semibold block"
               >
                 <p>
-                  Email<span className="text-red-600 ml-[1.5px]">*</span>
+                  Name<span className="text-red-600 ml-[1.5px]">*</span>
                 </p>
               </label>
               <input
@@ -99,24 +153,13 @@ const LoginPage = () => {
                 htmlFor="password"
                 className="text-[#5a7184] font-semibold block"
               >
-                <p>
-                  Password<span className="text-red-600 ml-[1.5px]">*</span>
-                </p>
+                Change Password
               </label>
               <input
                 type="password"
                 id="password"
-                {...register("password", {
-                  required: {
-                    value: true,
-                    message: "Password is required",
-                  },
-                  minLength: {
-                    value: 6,
-                    message: "Password length must be at least of 6 characters",
-                  },
-                })}
-                placeholder="Enter password"
+                {...register("password")}
+                placeholder="Enter new password"
                 className="placeholder:text-[#959ead] text-dark-hard mt-3 rounded-lg px-5 py-3 font-semibold  block outline-none border-[2px] border-secondary focus:border-primary"
               />
               {errors.password?.message && (
@@ -125,25 +168,13 @@ const LoginPage = () => {
                 </p>
               )}
             </div>
-            <Link
-              to="/forgot-password"
-              className="text-sm text-primary font-semibold"
-            >
-              Forgot Password?
-            </Link>
             <button
               type="submit"
-              disabled={!isValid || isLoading}
-              className="bg-primary text-white font-bold rounded-lg text-lg px-6 py-3 w-full my-3 disabled:bg-gray-400 disabled:hover:bg-primary disabled:hover:opacity-60 disabled:cursor-not-allowed"
+              disabled={!isValid || profileIsLoading || updateProfileIsLoading}
+              className="bg-primary text-white font-bold rounded-lg text-lg px-6 py-3 w-full mb-3 disabled:bg-gray-400 disabled:hover:bg-primary disabled:hover:opacity-60 disabled:cursor-not-allowed"
             >
-              Sign In
+              Update Profile
             </button>
-            <p className="font-semibold text-sm text-[#5a7184]">
-              Don't have account?{" "}
-              <Link to="/register" className="text-primary ml-1 text-base">
-                Register
-              </Link>
-            </p>
           </form>
         </div>
       </section>
@@ -151,4 +182,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default ProfilePage;

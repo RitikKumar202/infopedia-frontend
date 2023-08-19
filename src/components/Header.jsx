@@ -71,20 +71,21 @@ const Header = () => {
                       className="flex gap-x-1 items-center bg-secondary lg:bg-primary px-4 py-2 mt-4 lg:mt-0 rounded-md text-white font-semibold shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
                       onClick={() => setProfileDropdown(!profileDropdown)}
                     >
-                      <span>Profile</span>
+                      <span>Account</span>
                       <MdKeyboardArrowDown className="text-xl" />
                     </button>
                     <div
                       className={`${
                         profileDropdown ? "block" : "hidden"
-                      } lg:hidden transition-all duration-500 pt-2 lg:absolute lg:bottom-0 lg:right-[-5px] lg:transform lg:translate-y-full lg:group-hover:block w-max`}
+                      } lg:hidden transition-all duration-500 pt-2 lg:absolute lg:bottom-0 lg:right-0 lg:transform lg:translate-y-full lg:group-hover:block w-full`}
                     >
                       <ul className="bg-secondary lg:bg-primary text-center flex flex-col shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg overflow-hidden">
                         <button
+                          onClick={() => navigate("/profile")}
                           type="button"
                           className="hover:bg-dark-soft lg:hover:bg-secondary hover:text-white px-4 py-2 text-white"
                         >
-                          Dashboard
+                          Profile
                         </button>
                         <button
                           type="button"
