@@ -4,7 +4,7 @@ import { HiOutlineCamera } from "react-icons/hi";
 
 const ProfilePicture = ({ avatar }) => {
   return (
-    <div className="w-full flex items-center justify-center gap-x-4 mb-6">
+    <div className="w-full bg-[rgba(0,0,0,.05)] py-5 px-8 rounded-md flex md:flex-col items-center justify-center gap-x-4 mb-2 md:mb-0 md:mr-9">
       <div className="relative w-20 h-20 rounded-full outline outline-offset-2 outline-1 lutline-primary overflow-hidden">
         <label
           htmlFor="profilePicture"
@@ -26,7 +26,7 @@ const ProfilePicture = ({ avatar }) => {
       </div>
       <button
         type="button"
-        className="border-none bg-red-500 rounded-lg px-4 py-1 text-white"
+        className="md:mt-3 border-none bg-red-500 rounded-lg px-4 py-1 text-white"
       >
         Delete
       </button>
