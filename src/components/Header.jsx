@@ -4,18 +4,18 @@ import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/actions/user";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const navItemName = [
-  { name: "Home" },
-  { name: "Articles" },
-  { name: "Contact" },
+  { name: "Home", href: "/" },
+  { name: "Articles", href: "/articles" },
+  { name: "Contact", href: "/contact" },
 ];
 
-const NavItem = ({ name }) => {
+const NavItem = ({ item }) => {
   return (
     <li className="text-white lg:text-primary lg:hover:text-secondary transition-all duration-300">
-      <a href="/">{name}</a>
+      <Link to={item.href}>{item.name}</Link>
     </li>
   );
 };
@@ -41,9 +41,9 @@ const Header = () => {
     <section className="sticky top-0 left-0 right-0 bg-white z-50">
       <header className="w-full shadow-lg">
         <div className="container mx-auto px-5 py-4 flex justify-between items-center">
-          <div className="w-44 lg:w-56 flex items-center">
+          <Link to="/" className="w-44 lg:w-56 flex items-center">
             <img src={logo} alt="Infopedia" className="w-full" />
-          </div>
+          </Link>
 
           <div className="lg:hidden cursor-pointer z-50 text-primary">
             {navIsVisible ? (
@@ -60,7 +60,7 @@ const Header = () => {
           >
             <ul className="flex flex-col items-center gap-y-1 lg:flex-row gap-x-5 font-medium text-lg">
               {navItemName.map((item) => (
-                <NavItem key={item.name} name={item.name} />
+                <NavItem key={item.name} item={item} />
               ))}
             </ul>
             {userState.userInfo ? (
