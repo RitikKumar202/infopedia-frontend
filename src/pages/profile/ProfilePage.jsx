@@ -79,7 +79,7 @@ const ProfilePage = () => {
           <h1 className="text-2xl font-bold text-center text-dark-hard mb-8">
             Your Profile
           </h1>
-          <div className="flex flex-col md:flex-row items-start">
+          <div className="flex flex-col md:flex-row items-start justify-center">
             <ProfilePicture avatar={profileData?.avatar} />
             <form
               onSubmit={handleSubmit(submitHandler)}
