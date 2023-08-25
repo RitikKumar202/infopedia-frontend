@@ -9,7 +9,7 @@ import ProfilePage from "./pages/profile/ProfilePage";
 
 function App() {
   return (
-    <div className="font-Recursive">
+    <div className="font-DM_Sans">
       <Routes>
         <Route index path="/" element={<HomePage />} />
         <Route path="/article/:id" element={<ArticleDetailPage />} />

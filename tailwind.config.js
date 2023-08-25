@@ -16,6 +16,7 @@ module.exports = {
         Recursive: ["Recursive", "sans-serif"],
         Poppins: ["Poppins", "sans-serif"],
         Roboto: ["Roboto", "sans-serif"],
+        DM_Sans: ["DM Sans", "sans-serif"],
       },
     },
   },
