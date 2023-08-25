@@ -1,5 +1,5 @@
 import React from "react";
-import userProfile from "../../assets/posts/userProfile.jpg";
+import sampleUserImage from "../../assets/posts/avatar.png";
 
 import { FiMessageSquare, FiTrash } from "react-icons/fi";
 import { FaEdit } from "react-icons/fa";
@@ -32,8 +32,8 @@ const Comment = ({
   return (
     <div className="flex flex-nowrap items-start gap-x-3 p-3 bg-[#F2F2F5] rounded-lg">
       <img
-        src={userProfile}
-        alt="user profile"
+        src={sampleUserImage}
+        alt="user profileImage"
         className="w-9 h-9 object-fill object-center rounded-full"
       />
       <div className="flex flex-1 flex-col">

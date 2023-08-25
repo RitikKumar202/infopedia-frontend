@@ -1,6 +1,6 @@
 import React from "react";
-import postImage from "../../assets/posts/postImage.jpg";
-import userProfile from "../../assets/posts/userProfile.jpg";
+import samplePostImage from "../../assets/posts/NoPostImageAvailable.png";
+import sampleUserImage from "../../assets/posts/avatar.png";
 
 import Layout from "../../components/Layout";
 import BreadCrumbs from "../../components/BreadCrumbs";
@@ -18,25 +18,25 @@ const breadCrumbsData = [
 const postsData = [
   {
     _id: "1",
-    image: userProfile,
+    image: sampleUserImage,
     title: "Frontend roadmap by love babar",
     createdAt: "2023-08-09T17:51:46.607+0000",
   },
   {
     _id: "2",
-    image: userProfile,
+    image: sampleUserImage,
     title: "Frontend roadmap by love babar",
     createdAt: "2023-08-09T17:51:46.607+0000",
   },
   {
     _id: "3",
-    image: userProfile,
+    image: sampleUserImage,
     title: "Frontend roadmap by love babar",
     createdAt: "2023-08-09T17:51:46.607+0008",
   },
   {
     _id: "4",
-    image: userProfile,
+    image: sampleUserImage,
     title: "Frontend roadmap by love babar",
     createdAt: "2023-08-09T17:51:46.607+0000",
   },
@@ -50,11 +50,11 @@ const ArticleDetailPage = () => {
       <section className="container mx-auto max-w-5xl flex flex-col px-5 py-5 lg:flex-row lg:gap-x-5 lg:items-start">
         <article className="flex-1">
           <BreadCrumbs data={breadCrumbsData} />
-          <img src={postImage} alt="" className="rounded-xl w-full" />
+          <img src={samplePostImage} alt="" className="rounded-xl w-full" />
           <div className="mt-3 flex flex-col gap-y-5">
             <div className="flex gap-2 items-center">
               <img
-                src={userProfile}
+                src={sampleUserImage}
                 alt="User ProfileImage"
                 className="w-9 h-9 md:w-10 md:h-10 rounded-full object-fill object-center"
               />
