@@ -1,19 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import samplePostImage from "../../assets/posts/NoPostImageAvailable.png";
 import sampleUserImage from "../../assets/posts/avatar.png";
 
 import Layout from "../../components/Layout";
 import BreadCrumbs from "../../components/BreadCrumbs";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import SuggestedPosts from "./container/SuggestedPosts";
 import CommentsContainer from "../../components/comments/CommentsContainer";
 import SocialShareButtons from "../../components/SocialShareButtons";
+import { getSinglePost } from "../../services/index/posts";
+import { useQuery } from "@tanstack/react-query";
+import uploadFolderUrl from "../../constants/uploadFolderUrl";
 
-const breadCrumbsData = [
-  { name: "Home", link: "/" },
-  { name: "Article", link: "/article" },
-  { name: "Article Title", link: "/article/12" },
-];
+import { generateHTML } from "@tiptap/html";
+import Bold from "@tiptap/extension-bold";
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
+import Italic from "@tiptap/extension-italic";
+import parse from "html-react-parser";
 
 const postsData = [
   {
@@ -45,46 +50,71 @@ const postsData = [
 const tagsData = ["frontend", "backend", "problem solving", "data science"];
 
 const ArticleDetailPage = () => {
+  const { slug } = useParams();
+  const [breadCrumbsData, setbreadCrumbsData] = useState([]);
+  const [body, setBody] = useState(null);
+
+  const { data } = useQuery({
+    queryFn: () => getSinglePost({ slug }),
+    queryKey: ["article", slug],
+    onSuccess: (data) => {
+      setbreadCrumbsData([
+        { name: "Home", link: "/" },
+        { name: "Article", link: "/article" },
+        { name: "Article Title", link: `/article/${data.slug}` },
+      ]);
+      setBody(
+        parse(
+          generateHTML(data?.body, [Bold, Italic, Text, Paragraph, Document])
+        )
+      );
+    },
+  });
+
   return (
     <Layout>
       <section className="container mx-auto max-w-5xl flex flex-col px-5 py-5 lg:flex-row lg:gap-x-5 lg:items-start">
         <article className="flex-1">
           <BreadCrumbs data={breadCrumbsData} />
-          <img src={samplePostImage} alt="" className="rounded-xl w-full" />
+          <img
+            src={
+              data?.photo
+                ? uploadFolderUrl.UPLOAD_FOLDER_BASE_URL + data?.photo
+                : samplePostImage
+            }
+            alt={data?.title}
+            className="rounded-xl w-full"
+          />
           <div className="mt-3 flex flex-col gap-y-5">
             <div className="flex gap-2 items-center">
               <img
-                src={sampleUserImage}
-                alt="User ProfileImage"
+                src={
+                  data?.user.avatar
+                    ? uploadFolderUrl.UPLOAD_FOLDER_BASE_URL + data?.user.avatar
+                    : sampleUserImage
+                }
+                alt={data?.user.name}
                 className="w-9 h-9 md:w-10 md:h-10 rounded-full object-fill object-center"
               />
               <h4 className="font-bold font-Poppins text-sm md:text-base text-dark-soft">
-                Ritik Kumar
+                {data?.user.name}
               </h4>
             </div>
-            <div>
-              <Link
-                to="/article?category=selectedCategory"
-                className="bg-primary bg-opacity-10 text-primary rounded-lg px-3 py-1.5 text-sm md:text-base font-semibold italic"
-              >
-                #frontend
-              </Link>
+            <div className="flex gap-x-2">
+              {data?.categories.map((category) => (
+                <Link
+                  to={`/article?category=${category.name}`}
+                  className="bg-primary bg-opacity-10 text-primary rounded-lg px-3 py-1.5 text-sm md:text-base font-semibold italic"
+                >
+                  #{category.name}
+                </Link>
+              ))}
             </div>
           </div>
           <h1 className="text-xl md:text-[26px] font-medium font-Roboto mt-4 text-dark-hard">
-            Frontend roadmap by love babar
+            {data?.title}
           </h1>
-          <div className="mt-3 text-dark-soft font-Poppins">
-            <p className="leading-7 md:text-[18px] lg:text-xl">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta
-              doloribus facilis obcaecati deleniti iste odit deserunt laborum.
-              Numquam delectus fuga magnam aperiam recusandae id, incidunt
-              praesentium modi cum labore blanditiis autem ratione nostrum
-              obcaecati! Nostrum error ducimus blanditiis soluta expedita neque
-              placeat vero officiis, necessitatibus nihil autem repellendus a
-              numquam.
-            </p>
-          </div>
+          <div className="mt-3 prose prose-sm sm:prose-base">{body}</div>
 
           <CommentsContainer classname="mt-10" logginedUserId="a" />
         </article>

@@ -12,7 +12,7 @@ function App() {
     <div className="font-DM_Sans">
       <Routes>
         <Route index path="/" element={<HomePage />} />
-        <Route path="/article/:id" element={<ArticleDetailPage />} />
+        <Route path="/article/:slug" element={<ArticleDetailPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/profile" element={<ProfilePage />} />
