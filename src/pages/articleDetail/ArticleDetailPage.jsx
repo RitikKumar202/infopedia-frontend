@@ -21,6 +21,7 @@ import Italic from "@tiptap/extension-italic";
 import parse from "html-react-parser";
 import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
+import { useSelector } from "react-redux";
 
 const postsData = [
   {
@@ -52,6 +53,7 @@ const postsData = [
 const tagsData = ["frontend", "backend", "problem solving", "data science"];
 
 const ArticleDetailPage = () => {
+  const userState = useSelector((state) => state.user);
   const { slug } = useParams();
   const [breadCrumbsData, setbreadCrumbsData] = useState([]);
   const [body, setBody] = useState(null);
@@ -124,7 +126,11 @@ const ArticleDetailPage = () => {
             </h1>
             <div className="mt-3 prose prose-sm sm:prose-base">{body}</div>
 
-            <CommentsContainer classname="mt-10" logginedUserId="a" />
+            <CommentsContainer
+              comments={data?.comments}
+              classname="mt-10"
+              logginedUserId={userState?.userInfo?._id}
+            />
           </article>
           <div>
             <SuggestedPosts

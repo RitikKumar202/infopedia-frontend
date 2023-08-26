@@ -4,6 +4,7 @@ import sampleUserImage from "../../assets/posts/avatar.png";
 import { FiMessageSquare, FiTrash } from "react-icons/fi";
 import { FaEdit } from "react-icons/fa";
 import CommentForm from "./CommentForm";
+import uploadFolderUrl from "../../constants/uploadFolderUrl";
 
 const Comment = ({
   comment,
@@ -32,7 +33,11 @@ const Comment = ({
   return (
     <div className="flex flex-nowrap items-start gap-x-3 p-3 bg-[#F2F2F5] rounded-lg">
       <img
-        src={sampleUserImage}
+        src={
+          comment?.user?.avatar
+            ? uploadFolderUrl.UPLOAD_FOLDER_BASE_URL + comment.user.avatar
+            : sampleUserImage
+        }
         alt="user profileImage"
         className="w-9 h-9 object-fill object-center rounded-full"
       />
