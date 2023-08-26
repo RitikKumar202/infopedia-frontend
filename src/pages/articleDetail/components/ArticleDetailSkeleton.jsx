@@ -13,6 +13,8 @@ const ArticleDetailSkeleton = () => {
           <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-slate-300" />
           <div className="w-24 h-[10px] bg-slate-300 rounded-lg" />
         </div>
+        {/* article posted on */}
+        <div className="w-[35%] h-2 bg-slate-300 rounded-lg mt-2" />
         {/* categories */}
         <div className="flex gap-x-2 mt-4 mb-8">
           <div className="bg-slate-300 rounded-lg px-3 py-1.5 w-[120px] h-[35px]" />

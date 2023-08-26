@@ -94,8 +94,8 @@ const ArticleDetailPage = () => {
               alt={data?.title}
               className="rounded-xl w-full"
             />
-            <div className="mt-4 flex flex-col gap-y-5">
-              <div className="flex gap-2 items-center">
+            <div className="mt-4 flex flex-col mb-6">
+              <div className="flex gap-2 items-center mb-1">
                 <img
                   src={
                     data?.user.avatar
@@ -109,6 +109,18 @@ const ArticleDetailPage = () => {
                 <h4 className="font-bold font-Poppins text-sm md:text-base text-dark-soft">
                   {data?.user.name}
                 </h4>
+              </div>
+              <div className="flex items-center gap-x-1 mb-3">
+                <p className="text-dark-soft font-semibold">Posted on:</p>
+                <span className="text-slate-500 text-xs md:text-sm font-Recursive">
+                  {new Date(data.createdAt).toLocaleDateString("en-IN", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
               </div>
               <div className="flex gap-x-2">
                 {data?.categories.map((category) => (
