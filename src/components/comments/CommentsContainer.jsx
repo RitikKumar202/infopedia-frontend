@@ -73,12 +73,16 @@ const CommentsContainer = ({
 
   return (
     <div className={`${classname}`}>
-      <CommentForm
-        btnLabel="Send"
-        formSubmitHandler={(value) => addCommentHandler(value)}
-        loading={isLoadingNewComment}
-      />
+      {logginedUserId && (
+        <CommentForm
+          btnLabel="Comment"
+          formSubmitHandler={(value) => addCommentHandler(value)}
+          loading={isLoadingNewComment}
+        />
+      )}
+
       <div className="space-y-4 mt-8">
+        <h2 className="text-xl md:text-2xl font-medium">All Comments</h2>
         {comments.map((comment) => (
           <Comment
             key={comment._id}
