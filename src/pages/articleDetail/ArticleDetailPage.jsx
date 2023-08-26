@@ -19,6 +19,8 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import Italic from "@tiptap/extension-italic";
 import parse from "html-react-parser";
+import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const postsData = [
   {
@@ -54,7 +56,7 @@ const ArticleDetailPage = () => {
   const [breadCrumbsData, setbreadCrumbsData] = useState([]);
   const [body, setBody] = useState(null);
 
-  const { data } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryFn: () => getSinglePost({ slug }),
     queryKey: ["article", slug],
     onSuccess: (data) => {
@@ -73,69 +75,76 @@ const ArticleDetailPage = () => {
 
   return (
     <Layout>
-      <section className="container mx-auto max-w-5xl flex flex-col px-5 py-5 lg:flex-row lg:gap-x-5 lg:items-start">
-        <article className="flex-1">
-          <BreadCrumbs data={breadCrumbsData} />
-          <img
-            src={
-              data?.photo
-                ? uploadFolderUrl.UPLOAD_FOLDER_BASE_URL + data?.photo
-                : samplePostImage
-            }
-            alt={data?.title}
-            className="rounded-xl w-full"
-          />
-          <div className="mt-3 flex flex-col gap-y-5">
-            <div className="flex gap-2 items-center">
-              <img
-                src={
-                  data?.user.avatar
-                    ? uploadFolderUrl.UPLOAD_FOLDER_BASE_URL + data?.user.avatar
-                    : sampleUserImage
-                }
-                alt={data?.user.name}
-                className="w-9 h-9 md:w-10 md:h-10 rounded-full object-fill object-center"
-              />
-              <h4 className="font-bold font-Poppins text-sm md:text-base text-dark-soft">
-                {data?.user.name}
-              </h4>
-            </div>
-            <div className="flex gap-x-2">
-              {data?.categories.map((category) => (
-                <Link
-                  to={`/article?category=${category.name}`}
-                  className="bg-primary bg-opacity-10 text-primary rounded-lg px-3 py-1.5 text-sm md:text-base font-semibold italic"
-                >
-                  #{category.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-          <h1 className="text-xl md:text-[26px] font-medium font-Roboto mt-4 text-dark-hard">
-            {data?.title}
-          </h1>
-          <div className="mt-3 prose prose-sm sm:prose-base">{body}</div>
-
-          <CommentsContainer classname="mt-10" logginedUserId="a" />
-        </article>
-        <div>
-          <SuggestedPosts
-            header="Trending Articles"
-            posts={postsData}
-            tags={tagsData}
-            className="mt-8 lg:mt-0 lg:max-w-xs"
-          />
-          <div className="mt-7">
-            <h2 className="text-dark-hard font-medium mb-3 md:text-xl font-Poppins">
-              Share on:
-            </h2>
-            <SocialShareButtons
-              url={encodeURI("https://ritikkumar-portfolio.vercel.app/")}
-              title={encodeURIComponent("Ritik Kumar portfolio")}
+      {isLoading ? (
+        <ArticleDetailSkeleton />
+      ) : isError ? (
+        <ErrorMessage message="Couldn't fetch the post details" />
+      ) : (
+        <section className="container mx-auto max-w-5xl flex flex-col px-5 py-5 lg:flex-row lg:gap-x-5 lg:items-start">
+          <article className="flex-1">
+            <BreadCrumbs data={breadCrumbsData} />
+            <img
+              src={
+                data?.photo
+                  ? uploadFolderUrl.UPLOAD_FOLDER_BASE_URL + data?.photo
+                  : samplePostImage
+              }
+              alt={data?.title}
+              className="rounded-xl w-full"
             />
+            <div className="mt-4 flex flex-col gap-y-5">
+              <div className="flex gap-2 items-center">
+                <img
+                  src={
+                    data?.user.avatar
+                      ? uploadFolderUrl.UPLOAD_FOLDER_BASE_URL +
+                        data?.user.avatar
+                      : sampleUserImage
+                  }
+                  alt={data?.user.name}
+                  className="w-9 h-9 md:w-10 md:h-10 rounded-full object-fill object-center"
+                />
+                <h4 className="font-bold font-Poppins text-sm md:text-base text-dark-soft">
+                  {data?.user.name}
+                </h4>
+              </div>
+              <div className="flex gap-x-2">
+                {data?.categories.map((category) => (
+                  <Link
+                    to={`/article?category=${category.name}`}
+                    className="bg-primary bg-opacity-10 text-primary rounded-lg px-3 py-1.5 text-sm md:text-base font-semibold italic"
+                  >
+                    #{category.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <h1 className="text-xl md:text-[26px] font-medium font-Roboto mt-4 text-dark-hard">
+              {data?.title}
+            </h1>
+            <div className="mt-3 prose prose-sm sm:prose-base">{body}</div>
+
+            <CommentsContainer classname="mt-10" logginedUserId="a" />
+          </article>
+          <div>
+            <SuggestedPosts
+              header="Trending Articles"
+              posts={postsData}
+              tags={tagsData}
+              className="mt-8 lg:mt-0 lg:max-w-xs"
+            />
+            <div className="mt-7">
+              <h2 className="text-dark-hard font-medium mb-3 md:text-xl font-Poppins">
+                Share on:
+              </h2>
+              <SocialShareButtons
+                url={encodeURI("https://ritikkumar-portfolio.vercel.app/")}
+                title={encodeURIComponent("Ritik Kumar portfolio")}
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </Layout>
   );
 };
