@@ -8,7 +8,7 @@ import { Link, useParams } from "react-router-dom";
 import SuggestedPosts from "./container/SuggestedPosts";
 import CommentsContainer from "../../components/comments/CommentsContainer";
 import SocialShareButtons from "../../components/SocialShareButtons";
-import { getSinglePost } from "../../services/index/posts";
+import { getAllPosts, getSinglePost } from "../../services/index/posts";
 import { useQuery } from "@tanstack/react-query";
 import uploadFolderUrl from "../../constants/uploadFolderUrl";
 
@@ -22,35 +22,6 @@ import parse from "html-react-parser";
 import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useSelector } from "react-redux";
-
-const postsData = [
-  {
-    _id: "1",
-    image: sampleUserImage,
-    title: "Frontend roadmap by love babar",
-    createdAt: "2023-08-09T17:51:46.607+0000",
-  },
-  {
-    _id: "2",
-    image: sampleUserImage,
-    title: "Frontend roadmap by love babar",
-    createdAt: "2023-08-09T17:51:46.607+0000",
-  },
-  {
-    _id: "3",
-    image: sampleUserImage,
-    title: "Frontend roadmap by love babar",
-    createdAt: "2023-08-09T17:51:46.607+0008",
-  },
-  {
-    _id: "4",
-    image: sampleUserImage,
-    title: "Frontend roadmap by love babar",
-    createdAt: "2023-08-09T17:51:46.607+0000",
-  },
-];
-
-const tagsData = ["frontend", "backend", "problem solving", "data science"];
 
 const ArticleDetailPage = () => {
   const userState = useSelector((state) => state.user);
@@ -73,6 +44,11 @@ const ArticleDetailPage = () => {
         )
       );
     },
+  });
+
+  const { data: postsData } = useQuery({
+    queryFn: () => getAllPosts(),
+    queryKey: ["posts"],
   });
 
   return (
@@ -149,7 +125,7 @@ const ArticleDetailPage = () => {
             <SuggestedPosts
               header="Trending Articles"
               posts={postsData}
-              tags={tagsData}
+              tags={data?.tags}
               className="mt-8 lg:mt-0 lg:max-w-xs"
             />
             <div className="mt-7">
@@ -157,8 +133,8 @@ const ArticleDetailPage = () => {
                 Share on:
               </h2>
               <SocialShareButtons
-                url={encodeURI("https://ritikkumar-portfolio.vercel.app/")}
-                title={encodeURIComponent("Ritik Kumar portfolio")}
+                url={encodeURI(window.location.href)}
+                title={encodeURIComponent(data?.title)}
               />
             </div>
           </div>

@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import uploadFolderUrl from "../../../constants/uploadFolderUrl";
+import samplePostImage from "../../../assets/posts/NoPostImageAvailable.png";
 
 const SuggestedPosts = ({ className, header, posts = [], tags }) => {
   return (
@@ -16,13 +18,17 @@ const SuggestedPosts = ({ className, header, posts = [], tags }) => {
             className="flex space-x-3 flex-nowrap items-center"
           >
             <img
-              src={item.image}
-              alt="user profile"
+              src={
+                item?.photo
+                  ? uploadFolderUrl.UPLOAD_FOLDER_BASE_URL + item?.photo
+                  : samplePostImage
+              }
+              alt={item?.title}
               className="aspect-square object-center object-fill rounded-lg w-1/5"
             />
             <div className="font-Roboto">
               <h3 className="text-sm font-medium text-dark-hard md:text-[15px]">
-                <Link to="/">{item.title}</Link>
+                <Link to={`/article/${item.slug}`}>{item.title}</Link>
               </h3>
               <span className="text-gray-500 opacity-70 text-xs font-Recursive">
                 {new Date(item.createdAt).toLocaleDateString("en-IN", {
@@ -39,17 +45,21 @@ const SuggestedPosts = ({ className, header, posts = [], tags }) => {
       <h2 className="mt-8 font-Poppins font-medium text-lg md:text-xl text-dark-hard">
         Discover more
       </h2>
-      <div className="flex flex-wrap gap-x-2 gap-y-2 mt-4">
-        {tags.map((item, index) => (
-          <Link
-            key={index}
-            to="/"
-            className="inline-block text-xs md:text-sm bg-primary bg-opacity-10 text-primary rounded-lg px-3 py-1 italic"
-          >
-            #{item}
-          </Link>
-        ))}
-      </div>
+      {tags.length === 0 ? (
+        <p className="text-slate-500 mt-1">Oops! No tags found</p>
+      ) : (
+        <div className="flex flex-wrap gap-x-2 gap-y-2 mt-4">
+          {tags.map((item, index) => (
+            <Link
+              key={index}
+              to="/"
+              className="inline-block text-sm md:text-base bg-primary bg-opacity-10 text-primary rounded-lg px-3 py-1 italic"
+            >
+              #{item}
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
