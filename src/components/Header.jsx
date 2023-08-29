@@ -80,17 +80,26 @@ const Header = () => {
                       } lg:hidden transition-all duration-500 pt-2 lg:absolute lg:bottom-0 lg:right-0 lg:transform lg:translate-y-full lg:group-hover:block w-full`}
                     >
                       <ul className="bg-secondary lg:bg-primary text-center flex flex-col shadow-[0_3px_10px_rgb(0,0,0,0.2)] rounded-lg overflow-hidden">
+                        {userState?.userInfo?.admin && (
+                          <button
+                            onClick={() => navigate("/dashboard")}
+                            type="button"
+                            className="hover:bg-dark-soft hover:text-white px-4 py-2 text-white"
+                          >
+                            Dashboard
+                          </button>
+                        )}
                         <button
                           onClick={() => navigate("/profile")}
                           type="button"
-                          className="hover:bg-dark-soft lg:hover:bg-secondary hover:text-white px-4 py-2 text-white"
+                          className="hover:bg-dark-soft hover:text-white px-4 py-2 text-white"
                         >
                           Profile
                         </button>
                         <button
                           type="button"
                           onClick={logoutHandler}
-                          className="hover:bg-dark-soft lg:hover:bg-secondary hover:text-white px-4 py-2 text-white"
+                          className="hover:bg-dark-soft hover:text-white px-4 py-2 text-white"
                         >
                           Logout
                         </button>

@@ -77,7 +77,7 @@ const ProfilePage = () => {
       <section className="container mx-auto py-10 px-5">
         <div className="w-full max-w-sm mx-auto font-Poppins">
           <h1 className="text-2xl font-bold text-center text-dark-hard mb-8">
-            Your Profile
+            Edit Profile Details
           </h1>
           <div className="flex flex-col md:flex-row items-start justify-center">
             <ProfilePicture avatar={profileData?.avatar} />
@@ -126,7 +126,7 @@ const ProfilePage = () => {
                   className="text-[#5a7184] font-semibold block"
                 >
                   <p>
-                    Name<span className="text-red-600 ml-[1.5px]">*</span>
+                    Email<span className="text-red-600 ml-[1.5px]">*</span>
                   </p>
                 </label>
                 <input
