@@ -3,8 +3,9 @@ import Layout from "../../components/Layout";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import { getUserProfile } from "../../services/index/users";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import loader from "../../assets/loader.gif";
+import DashboardMenu from "./DashboardMenu";
 
 const Dashboard = () => {
   const userState = useSelector((state) => state.user);
@@ -47,7 +48,10 @@ const Dashboard = () => {
   return (
     <Layout>
       <section className="container mx-auto py-10 px-5">
-        <h2>All Posts</h2>
+        <DashboardMenu />
+        <main>
+          <Outlet />
+        </main>
       </section>
     </Layout>
   );

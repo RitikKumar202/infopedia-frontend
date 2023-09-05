@@ -7,6 +7,8 @@ import RegisterPage from "./pages/register/RegisterPage";
 import LoginPage from "./pages/login/LoginPage";
 import ProfilePage from "./pages/profile/ProfilePage";
 import Dashboard from "./pages/dashboard/Dashboard";
+import ManagePosts from "./pages/dashboard/posts/ManagePosts";
+import PostNewArticle from "./pages/dashboard/posts/PostNewArticle";
 
 function App() {
   return (
@@ -17,7 +19,10 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />}>
+          <Route index element={<ManagePosts />} />
+          <Route path="post/new-article" element={<PostNewArticle />} />
+        </Route>
       </Routes>
       <Toaster />
     </div>

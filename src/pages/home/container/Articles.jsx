@@ -18,7 +18,7 @@ const Articles = () => {
     <section className="flex flex-col container mx-auto  px-5 py-10">
       <div className="flex flex-wrap justify-start md:gap-x-5 gap-y-5 pb-10">
         {isLoading ? (
-          [...Array(data)].map((item, index) => (
+          [...Array(data?.data)].map((item, index) => (
             <ArticleCardSkeleton
               key={index}
               className="w-full md:w-[calc(50%-20px)] lg:w-[calc(33%-21px)]"
@@ -27,7 +27,7 @@ const Articles = () => {
         ) : isError ? (
           <ErrorMessage message="Couldn't fetch the posts data" />
         ) : (
-          data.map((post) => (
+          data?.data.map((post) => (
             <ArticleCard
               key={post._id}
               post={post}

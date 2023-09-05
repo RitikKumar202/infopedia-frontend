@@ -13,6 +13,7 @@
 
 ::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -21,4 +22,20 @@
 
 ::-webkit-scrollbar-thumb {
     background: #a427e2;
+}
+
+@media screen and (max-width:640px) {
+    ::-webkit-scrollbar {
+        width: 0px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, .30);
+        border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #a427e2;
+        border-radius: 8px;
+    }
 }
