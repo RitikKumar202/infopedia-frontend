@@ -3,10 +3,13 @@ import { getAllPosts } from "../../../services/index/posts";
 import { useQuery } from "@tanstack/react-query";
 import uploadFolderUrl from "../../../constants/uploadFolderUrl";
 import NoPosterImage from "../../../assets/posts/NoPostImageAvailable.png";
+import { getUserProfile } from "../../../services/index/users";
+import { useSelector } from "react-redux";
 
 const ManagePosts = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const userState = useSelector((state) => state.user);
 
   const {
     data: postsData,
@@ -16,6 +19,13 @@ const ManagePosts = () => {
   } = useQuery({
     queryFn: () => getAllPosts(searchKeyword, currentPage),
     queryKey: ["posts"],
+  });
+
+  const { data: profileData, isLoading: profileIsLoading } = useQuery({
+    queryFn: () => {
+      return getUserProfile({ token: userState.userInfo.token });
+    },
+    queryKey: ["profile"],
   });
 
   const searchKeywordHandler = (e) => {
@@ -101,13 +111,15 @@ const ManagePosts = () => {
                         Loading...
                       </td>
                     </tr>
-                  ) : postsData?.data?.length === 0 ? (
+                  ) : postsData?.data?.length === 0 ||
+                    postsData?.data[0]?.user?._id !==
+                      userState.userInfo?._id ? (
                     <tr>
                       <td
                         colSpan={5}
                         className="text-center py-10 text-red-500 w-full"
                       >
-                        No Posts Found.
+                        No Posts Found!
                       </td>
                     </tr>
                   ) : (
