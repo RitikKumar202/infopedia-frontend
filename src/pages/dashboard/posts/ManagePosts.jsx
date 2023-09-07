@@ -155,11 +155,14 @@ const ManagePosts = () => {
                     </tr>
                   ) : (
                     postsData?.data.map((post) => (
-                      <tr>
+                      <tr key={post.title}>
                         <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
                           <div className="flex items-center">
                             <div className="flex-shrink-0">
-                              <a href="/" className="relative block">
+                              <Link
+                                to={`/article/${post.slug}`}
+                                className="relative block"
+                              >
                                 <img
                                   alt={post.title}
                                   src={
@@ -170,7 +173,7 @@ const ManagePosts = () => {
                                   }
                                   className="mx-auto object-cover rounded-md aspect-square w-10 "
                                 />
-                              </a>
+                              </Link>
                             </div>
                             <div className="ml-3">
                               <p className="text-gray-900 whitespace-no-wrap">
