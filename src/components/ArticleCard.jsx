@@ -17,7 +17,7 @@ const ArticleCard = ({ post, className }) => {
               : samplePostImage
           }
           alt={post?.title}
-          className="w-full h-auto md:h-52 lg:h48 xl:h-60 object-cover object-center"
+          className="w-full h-auto md:h-52 lg:h48 xl:h-60 object-fill object-center"
         />
       </Link>
       <div className="p-5">

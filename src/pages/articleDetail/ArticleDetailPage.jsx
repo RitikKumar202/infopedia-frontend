@@ -4,12 +4,16 @@ import sampleUserImage from "../../assets/posts/avatar.png";
 
 import Layout from "../../components/Layout";
 import BreadCrumbs from "../../components/BreadCrumbs";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import SuggestedPosts from "./container/SuggestedPosts";
 import CommentsContainer from "../../components/comments/CommentsContainer";
 import SocialShareButtons from "../../components/SocialShareButtons";
-import { getAllPosts, getSinglePost } from "../../services/index/posts";
-import { useQuery } from "@tanstack/react-query";
+import {
+  deletePost,
+  getAllPosts,
+  getSinglePost,
+} from "../../services/index/posts";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import uploadFolderUrl from "../../constants/uploadFolderUrl";
 
 import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
@@ -17,12 +21,15 @@ import ErrorMessage from "../../components/ErrorMessage";
 import { useSelector } from "react-redux";
 import parseJsonToHtml from "../../utils/parseJsonToHtml";
 import Editor from "../../components/editor/Editor";
+import { MdDelete, MdEdit } from "react-icons/md";
 
 const ArticleDetailPage = () => {
   const userState = useSelector((state) => state.user);
   const { slug } = useParams();
   const [breadCrumbsData, setbreadCrumbsData] = useState([]);
   const [body, setBody] = useState(null);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data, isLoading, isError } = useQuery({
     queryFn: () => getSinglePost({ slug }),
@@ -37,6 +44,25 @@ const ArticleDetailPage = () => {
     },
   });
 
+  const { mutate: mutateDeletePost, isLoading: isLoadingDeletePost } =
+    useMutation({
+      mutationFn: ({ slug, token }) => {
+        return deletePost({
+          slug,
+          token,
+        });
+      },
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["posts"]);
+      },
+      onError: (error) => {},
+    });
+
+  const deletePostHandler = ({ slug, token }) => {
+    mutateDeletePost({ slug, token });
+    navigate("/");
+  };
+
   const { data: postsData } = useQuery({
     queryFn: () => getAllPosts(),
     queryKey: ["posts"],
@@ -47,7 +73,10 @@ const ArticleDetailPage = () => {
       {isLoading ? (
         <ArticleDetailSkeleton />
       ) : isError ? (
-        <ErrorMessage message="Couldn't fetch the post details" />
+        <ErrorMessage
+          className="mt-20 mb-20"
+          message="Couldn't fetch the post details"
+        />
       ) : (
         <section className="container mx-auto max-w-5xl flex flex-col px-5 py-5 lg:flex-row lg:gap-x-5 lg:items-start">
           <article className="flex-1">
@@ -62,20 +91,40 @@ const ArticleDetailPage = () => {
               className="rounded-xl w-full"
             />
             <div className="mt-4 flex flex-col mb-6">
-              <div className="flex gap-2 items-center mb-1">
-                <img
-                  src={
-                    data?.user.avatar
-                      ? uploadFolderUrl.UPLOAD_FOLDER_BASE_URL +
-                        data?.user.avatar
-                      : sampleUserImage
-                  }
-                  alt={data?.user.name}
-                  className="w-9 h-9 md:w-10 md:h-10 rounded-full object-fill object-center"
-                />
-                <h4 className="font-bold font-Poppins text-sm md:text-base text-dark-soft">
-                  {data?.user.name}
-                </h4>
+              <div className="flex flex-row justify-between mb-1">
+                <div className="flex gap-2 items-center">
+                  <img
+                    src={
+                      data?.user.avatar
+                        ? uploadFolderUrl.UPLOAD_FOLDER_BASE_URL +
+                          data?.user.avatar
+                        : sampleUserImage
+                    }
+                    alt={data?.user.name}
+                    className="w-9 h-9 md:w-10 md:h-10 rounded-full object-fill object-center"
+                  />
+                  <h4 className="font-bold font-Poppins text-sm md:text-base text-dark-soft">
+                    {data?.user.name}
+                  </h4>
+                </div>
+                {userState.userInfo?._id === postsData?.data[0]?.user?._id && (
+                  <div className="flex flex-row items-center justify-center space-x-2">
+                    <Link to={`/dashboard/post/edit/${data?.slug}`}>
+                      <MdEdit className="text-2xl text-green-500 cursor-pointer" />
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        deletePostHandler({
+                          slug: data?.slug,
+                          token: userState.userInfo.token,
+                        });
+                      }}
+                    >
+                      <MdDelete className="text-2xl text-red-500 cursor-pointer" />
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-x-1 mb-3">
                 <p className="text-dark-soft font-semibold">Posted on:</p>
