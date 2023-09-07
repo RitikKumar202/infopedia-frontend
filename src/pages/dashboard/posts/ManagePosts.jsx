@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getAllPosts } from "../../../services/index/posts";
-import { useQuery } from "@tanstack/react-query";
+import { deletePost, getAllPosts } from "../../../services/index/posts";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import uploadFolderUrl from "../../../constants/uploadFolderUrl";
 import NoPosterImage from "../../../assets/posts/NoPostImageAvailable.png";
 import { getUserProfile } from "../../../services/index/users";
 import { useSelector } from "react-redux";
 import Pagination from "../../../components/Pagination";
+import { Link } from "react-router-dom";
 
 let isFirstRun = true;
 
@@ -13,6 +14,7 @@ const ManagePosts = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const userState = useSelector((state) => state.user);
+  const queryClient = useQueryClient();
 
   const {
     data: postsData,
@@ -23,6 +25,20 @@ const ManagePosts = () => {
     queryFn: () => getAllPosts(searchKeyword, currentPage),
     queryKey: ["posts"],
   });
+
+  const { mutate: mutateDeletePost, isLoading: isLoadingDeletePost } =
+    useMutation({
+      mutationFn: ({ slug, token }) => {
+        return deletePost({
+          slug,
+          token,
+        });
+      },
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["posts"]);
+      },
+      onError: (error) => {},
+    });
 
   useEffect(() => {
     if (isFirstRun) {
@@ -50,16 +66,20 @@ const ManagePosts = () => {
     refetch();
   };
 
+  const deletePostHandler = ({ slug, token }) => {
+    mutateDeletePost({ slug, token });
+  };
+
   return (
     <>
       <h1 className="text-2xl font-semibold text-center">Manage Posts</h1>
       <div className="w-full px-4 mx-auto">
         <div className="py-8">
           <div className="flex flex-row justify-between w-full mb-1 sm:mb-0">
-            <div className="text-end">
+            <div className="text-end w-full">
               <form
                 onSubmit={submitSearchKeywordHandler}
-                className="flex flex-row items-center justify-center w-full max-w-sm gap-x-2"
+                className="flex flex-row items-center justify-end mb-3 w-full gap-x-2"
               >
                 <div className=" relative ">
                   <input
@@ -192,13 +212,26 @@ const ManagePosts = () => {
                               : "No Tags"}
                           </div>
                         </td>
-                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200">
-                          <a
-                            href="/"
-                            className="text-indigo-600 hover:text-indigo-900"
+                        <td className="px-5 py-5 text-sm bg-white border-b border-gray-200 space-x-5">
+                          <Link
+                            to={`/dashboard/post/edit/${post?.slug}`}
+                            className="text-green-600 hover:text-green-700"
                           >
                             Edit
-                          </a>
+                          </Link>
+                          <button
+                            disabled={isLoadingDeletePost}
+                            type="button"
+                            className="text-red-600 hover:text-red-700 disabled:opacity-70 disabled:cursor-not-allowed"
+                            onClick={() => {
+                              deletePostHandler({
+                                slug: post?.slug,
+                                token: userState.userInfo.token,
+                              });
+                            }}
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))

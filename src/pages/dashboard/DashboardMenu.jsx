@@ -20,7 +20,7 @@ const DashboardMenu = () => {
   const [activeMenu, setActiveMenu] = useState("managePost");
 
   return (
-    <div className="container flex flex-col md:flex-row mb-6">
+    <div className="container flex flex-col md:flex-row mb-6 mt-8">
       {MENU_ITEM.map((item) => (
         <Link
           key={item.title}

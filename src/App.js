@@ -9,6 +9,7 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import Dashboard from "./pages/dashboard/Dashboard";
 import ManagePosts from "./pages/dashboard/posts/ManagePosts";
 import PostNewArticle from "./pages/dashboard/posts/PostNewArticle";
+import EditPost from "./pages/dashboard/posts/EditPost";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />}>
           <Route index element={<ManagePosts />} />
           <Route path="post/new-article" element={<PostNewArticle />} />
+          <Route path="post/edit/:slug" element={<EditPost />} />
         </Route>
       </Routes>
       <Toaster />

@@ -47,12 +47,12 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <section className="container mx-auto py-10 px-5">
+      <div className="px-6">
         <DashboardMenu />
         <main>
           <Outlet />
         </main>
-      </section>
+      </div>
     </Layout>
   );
 };

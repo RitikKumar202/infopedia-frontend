@@ -12,16 +12,11 @@ import { getAllPosts, getSinglePost } from "../../services/index/posts";
 import { useQuery } from "@tanstack/react-query";
 import uploadFolderUrl from "../../constants/uploadFolderUrl";
 
-import { generateHTML } from "@tiptap/html";
-import Bold from "@tiptap/extension-bold";
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import Italic from "@tiptap/extension-italic";
-import parse from "html-react-parser";
 import ArticleDetailSkeleton from "./components/ArticleDetailSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
 import { useSelector } from "react-redux";
+import parseJsonToHtml from "../../utils/parseJsonToHtml";
+import Editor from "../../components/editor/Editor";
 
 const ArticleDetailPage = () => {
   const userState = useSelector((state) => state.user);
@@ -38,11 +33,7 @@ const ArticleDetailPage = () => {
         { name: "Article", link: "/article" },
         { name: "Article Title", link: `/article/${data.slug}` },
       ]);
-      setBody(
-        parse(
-          generateHTML(data?.body, [Bold, Italic, Text, Paragraph, Document])
-        )
-      );
+      setBody(parseJsonToHtml(data?.body));
     },
   });
 
@@ -112,7 +103,11 @@ const ArticleDetailPage = () => {
             <h1 className="text-xl md:text-[26px] font-medium font-Roboto mt-4 text-dark-hard">
               {data?.title}
             </h1>
-            <div className="mt-3 prose prose-sm sm:prose-base">{body}</div>
+            <div className="w-full">
+              {!isLoading && !isError && (
+                <Editor content={data?.body} editable={false} />
+              )}
+            </div>
 
             <CommentsContainer
               comments={data?.comments}
