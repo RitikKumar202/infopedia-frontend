@@ -10,12 +10,14 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import ManagePosts from "./pages/dashboard/posts/ManagePosts";
 import EditPost from "./pages/dashboard/posts/EditPost";
 import ContactPage from "./pages/contact/ContactPage";
+import AboutPage from "./pages/about/AboutPage";
 
 function App() {
   return (
     <div className="font-DM_Sans">
       <Routes>
         <Route index path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/article/:slug" element={<ArticleDetailPage />} />
         <Route path="/register" element={<RegisterPage />} />
