@@ -31,6 +31,7 @@ const EditPost = () => {
   const [categories, setCategories] = useState(null);
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState(null);
+  const [postSlug, setPostSlug] = useState(slug);
 
   const { data, isLoading, isError } = useQuery({
     queryFn: () => getSinglePost({ slug }),
@@ -86,7 +87,7 @@ const EditPost = () => {
 
     updatedData.append(
       "document",
-      JSON.stringify({ body, categories, title, tags })
+      JSON.stringify({ body, categories, title, tags, slug: postSlug })
     );
 
     mutateUpdatePostDetail({
@@ -165,7 +166,21 @@ const EditPost = () => {
                 value={title}
                 className="d-input d-input-bordered border-slate-300 !outline-none text-xl font-normal font-roboto text-dark-hard"
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter blog title"
+                placeholder="Enter post title"
+              />
+            </div>
+            <div className="d-form-control w-full">
+              <label className="d-label" htmlFor="slug">
+                <span className="d-label-text text-xl font-medium">Slug:</span>
+              </label>
+              <input
+                id="slug"
+                value={postSlug}
+                className="d-input d-input-bordered border-slate-300 !outline-none text-xl font-normal font-roboto text-dark-hard"
+                onChange={(e) =>
+                  setPostSlug(e.target.value.replace(/\s+/g, "-").toLowerCase())
+                }
+                placeholder="Edit post slug"
               />
             </div>
             <div className="mt-2 mb-2">
