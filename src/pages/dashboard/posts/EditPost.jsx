@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { getSinglePost, updatePost } from "../../../services/index/posts";
@@ -10,6 +10,7 @@ import Editor from "../../../components/editor/Editor";
 import EditPostDetailSkeleton from "./components/EditPostDetailSkeleton";
 import MultiSelectDropdown from "../select-dropdown/MultiSelectDropdown";
 import { getAllCategories } from "../../../services/index/postCategories";
+import CreatableSelect from "react-select/creatable";
 import {
   categoryToOption,
   filterCategories,
@@ -28,10 +29,18 @@ const EditPost = () => {
   const [photo, setPhoto] = useState(null);
   const [body, setBody] = useState(null);
   const [categories, setCategories] = useState(null);
+  const [title, setTitle] = useState("");
+  const [tags, setTags] = useState(null);
 
   const { data, isLoading, isError } = useQuery({
     queryFn: () => getSinglePost({ slug }),
     queryKey: ["article", slug],
+    onSuccess: (data) => {
+      setInitialPhoto(data?.photo);
+      setCategories(data.categories.map((item) => item.value));
+      setTitle(data.title);
+      setTags(data.tags);
+    },
   });
 
   const {
@@ -50,13 +59,6 @@ const EditPost = () => {
     },
     onError: (error) => {},
   });
-
-  useEffect(() => {
-    if (!isLoading && !isError) {
-      setInitialPhoto(data?.photo);
-      setCategories(data.categories.map((item) => item.value));
-    }
-  }, [data, isError, isLoading]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -82,7 +84,10 @@ const EditPost = () => {
       updatedData.append("postPicture", picture);
     }
 
-    updatedData.append("document", JSON.stringify({ body, categories }));
+    updatedData.append(
+      "document",
+      JSON.stringify({ body, categories, title, tags })
+    );
 
     mutateUpdatePostDetail({
       updatedData,
@@ -151,10 +156,24 @@ const EditPost = () => {
                 </Link>
               ))}
             </div>
-            <h1 className="text-xl font-medium font-roboto mt-4 text-dark-hard md:text-[26px] mb-6">
-              {data?.title}
-            </h1>
-            <div className="my-5">
+            <div className="d-form-control w-full">
+              <label className="d-label" htmlFor="title">
+                <span className="d-label-text text-xl font-medium">Title:</span>
+              </label>
+              <input
+                id="title"
+                value={title}
+                className="d-input d-input-bordered border-slate-300 !outline-none text-xl font-normal font-roboto text-dark-hard"
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter blog title"
+              />
+            </div>
+            <div className="mt-2 mb-2">
+              <label className="d-label">
+                <span className="d-label-text text-xl font-medium">
+                  Categories:
+                </span>
+              </label>
               {isPostDataLoaded && (
                 <MultiSelectDropdown
                   loadOptions={promiseOptions}
@@ -162,6 +181,24 @@ const EditPost = () => {
                   onChange={(newValue) =>
                     setCategories(newValue.map((item) => item.value))
                   }
+                />
+              )}
+            </div>
+            <div className="mb-2">
+              <label className="d-label">
+                <span className="d-label-text text-xl font-medium">Tags:</span>
+              </label>
+              {isPostDataLoaded && (
+                <CreatableSelect
+                  defaultValue={data.tags.map((tag) => ({
+                    value: tag,
+                    label: tag,
+                  }))}
+                  isMulti
+                  onChange={(newValue) =>
+                    setTags(newValue.map((item) => item.value))
+                  }
+                  className="relative z-20"
                 />
               )}
             </div>
