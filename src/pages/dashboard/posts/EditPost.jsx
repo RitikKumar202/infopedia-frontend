@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getSinglePost, updatePost } from "../../../services/index/posts";
 import uploadFolderUrl from "../../../constants/uploadFolderUrl";
 import ErrorMessage from "../../../components/ErrorMessage";
@@ -15,6 +15,7 @@ import {
   categoryToOption,
   filterCategories,
 } from "../../../utils/multiSelectTagUtils";
+import toast from "react-hot-toast";
 
 const promiseOptions = async (inputValue) => {
   const categoriesData = await getAllCategories();
@@ -22,6 +23,7 @@ const promiseOptions = async (inputValue) => {
 };
 
 const EditPost = () => {
+  const navigate = useNavigate();
   const { slug } = useParams();
   const queryClient = useQueryClient();
   const userState = useSelector((state) => state.user);
@@ -57,6 +59,8 @@ const EditPost = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries(["article", slug]);
+      toast.success("Post updated successfully");
+      navigate(`/dashboard/post/edit/${data.slug}`, { replace: true });
     },
     onError: (error) => {},
   });
