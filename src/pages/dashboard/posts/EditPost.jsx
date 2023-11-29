@@ -34,16 +34,18 @@ const EditPost = () => {
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState(null);
   const [postSlug, setPostSlug] = useState(slug);
+  const [caption, setCaption] = useState("");
 
   const { data, isLoading, isError } = useQuery({
     queryFn: () => getSinglePost({ slug }),
     queryKey: ["article", slug],
     onSuccess: (data) => {
       setInitialPhoto(data?.photo);
-      setCategories(data.categories.map((item) => item.value));
+      setCategories(data.categories.map((item) => item._id));
       setTitle(data.title);
       setTags(data.tags);
     },
+    refetchOnWindowFocus: false,
   });
 
   const {
@@ -91,7 +93,7 @@ const EditPost = () => {
 
     updatedData.append(
       "document",
-      JSON.stringify({ body, categories, title, tags, slug: postSlug })
+      JSON.stringify({ body, categories, title, tags, slug: postSlug, caption })
     );
 
     mutateUpdatePostDetail({
@@ -171,6 +173,20 @@ const EditPost = () => {
                 className="d-input d-input-bordered border-slate-300 !outline-none text-xl font-normal font-roboto text-dark-hard"
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter post title"
+              />
+            </div>
+            <div className="d-form-control w-full">
+              <label className="d-label" htmlFor="caption">
+                <span className="d-label-text text-xl font-medium">
+                  Caption:
+                </span>
+              </label>
+              <input
+                id="caption"
+                value={caption}
+                className="d-input d-input-bordered border-slate-300 !outline-none text-xl font-normal font-roboto text-dark-hard"
+                onChange={(e) => setCaption(e.target.value)}
+                placeholder="caption"
               />
             </div>
             <div className="d-form-control w-full">
