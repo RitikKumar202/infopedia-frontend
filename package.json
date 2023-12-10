@@ -2,7 +2,7 @@
   "name": "infopedia-frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://infopedia.onrender.com/",
+  "proxy": "https://infopedia.onrender.com",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.5",
     "@tanstack/react-query": "^4.32.6",
